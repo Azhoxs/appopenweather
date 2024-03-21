@@ -1,7 +1,4 @@
-# Name of the students
-
-Sergent Lucas TPC
-
+Verscheure Erwan TPC
 
 # appopenweather
 
