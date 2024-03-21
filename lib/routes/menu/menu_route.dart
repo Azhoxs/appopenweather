@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../routes/home_route.dart';
+import '../home/home_route.dart';
 
 class MenuRoute extends StatelessWidget {
   const MenuRoute({super.key});
