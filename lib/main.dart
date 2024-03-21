@@ -1,7 +1,9 @@
+import 'package:appopenweather/app/app.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(const OpenWeatherApp());
 }
 
 class MyApp extends StatelessWidget {
