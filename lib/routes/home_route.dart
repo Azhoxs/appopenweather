@@ -7,7 +7,7 @@ class HomeRoute extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 1, // Set 'Villes' button as selected
+        currentIndex: 1,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.cloud),
@@ -21,10 +21,9 @@ class HomeRoute extends StatelessWidget {
         onTap: (index) {
           switch (index) {
             case 0:
-              Navigator.pop(context); // Action when 'Météo' button is pressed
+              Navigator.pop(context);
               break;
             case 1:
-            // Action when 'Villes' button is pressed
               break;
           }
         },

@@ -22,10 +22,9 @@ class MenuRoute extends StatelessWidget {
         onTap: (index) {
           switch (index) {
             case 0:
-            // Action when 'Météo' button is pressed
               break;
             case 1:
-              _goToHome(context); // Action when 'Villes' button is pressed
+              _goToHome(context);
               break;
           }
         },
