@@ -49,13 +49,22 @@ class _MenuRouteState extends State<MenuRoute> {
                 return Center(child: Text('Erreur: ${snapshot.error}'));
               else
                 return Center(
-                  child: Text(snapshot.data != null
-                      ? 'Température à Paris: ${double.parse(snapshot.data!).round()}°C'
-                      : 'Chargement...',
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        snapshot.data != null
+                            ? '${double.parse(snapshot.data!).round()}°C'
+                            : 'Chargement...',
+                        style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        'Paris',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ],
                   ),
                 );
-
-
             }
           },
         );
