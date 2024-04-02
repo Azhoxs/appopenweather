@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../app/common/WeatherTemperature.dart';
+import '../../app/common/WeatherIcon.dart';
+
 
 class MenuRoute extends StatefulWidget {
   const MenuRoute({Key? key}) : super(key: key);
@@ -84,12 +86,8 @@ class _MenuRouteState extends State<MenuRoute> {
 
     // Détermine le nom de l'image de fond en fonction de l'heure
     String backgroundImage;
-    if (hour >= 6 && hour < 11) {
-      backgroundImage = 'backgrounds/1.jpg';
-    } else if (hour >= 11 && hour < 18) {
+    if (hour >= 12 && hour < 16) {
       backgroundImage = 'backgrounds/2.jpg';
-    } else if (hour >= 18 && hour < 21) {
-      backgroundImage = 'backgrounds/3.jpg';
     } else {
       backgroundImage = 'backgrounds/4.jpg';
     }
@@ -118,12 +116,65 @@ class _MenuRouteState extends State<MenuRoute> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                          '$roundedTemperature°C',
-                          style: TextStyle(fontSize: 70, fontWeight: FontWeight.bold, color: Colors.white),
-                        ),
-                        Text(
                           favoriteCity,
-                          style: TextStyle(fontSize: 40, color: Colors.white),
+                          style: TextStyle(fontSize: 30, color: Colors.white),
+                        ),
+                        FutureBuilder<double>(
+                          future: WeatherTemperature.getTemperature(favoriteCity).then((value) => double.parse(value)),
+                          builder: (BuildContext context, AsyncSnapshot<double> snapshot) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return CircularProgressIndicator();
+                            } else {
+                              if (snapshot.hasError)
+                                return Text('Erreur: ${snapshot.error}');
+                              else {
+                                int roundedTemperature = snapshot.data?.round() ?? 0;
+                                return Text(
+                                  '$roundedTemperature°',
+                                  style: TextStyle(fontSize: 70, fontWeight: FontWeight.bold, color: Colors.white),
+                                );
+                              }
+                            }
+                          },
+                        ),
+                        FutureBuilder<String>(
+                          future: WeatherCondition.getCondition(favoriteCity),
+                          builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return CircularProgressIndicator();
+                            } else {
+                              if (snapshot.hasError)
+                                return Text('Erreur: ${snapshot.error}');
+                              else {
+                                String condition = snapshot.data ?? 'default';
+                                String iconPath;
+                                switch (condition.toLowerCase()) {
+                                  case 'clear':
+                                    iconPath = 'icons/weather/day/soleil1.png';
+                                    break;
+                                  case 'clouds':
+                                    iconPath = 'icons/weather/day/nuages1.png';
+                                    break;
+                                  case 'atmosphere':
+                                    iconPath = 'icons/weather/day/brouillard1.png';
+                                    break;
+                                  case 'snow':
+                                    iconPath = 'icons/weather/day/neige1.png';
+                                    break;
+                                  case 'thunderstorm':
+                                    iconPath = 'icons/weather/day/orages1.png';
+                                    break;
+                                  case 'drizzle':
+                                  case 'rain':
+                                    iconPath = 'icons/weather/day/pluie1.png';
+                                    break;
+                                  default:
+                                    iconPath = 'icons/day/default.png'; // Une icône par défaut si la condition météo n'est pas reconnue
+                                }
+                                return Image.asset(iconPath, width: 200.0, height: 200.0);
+                              }
+                            }
+                          },
                         ),
                       ],
                     ),
