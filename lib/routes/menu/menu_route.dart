@@ -11,6 +11,7 @@ class MenuRoute extends StatefulWidget {
 class _MenuRouteState extends State<MenuRoute> {
   int _currentIndex = 0;
   List<String> _cities = [];
+  String favoriteCity = 'Calais';
 
   @override
   Widget build(BuildContext context) {
@@ -63,8 +64,12 @@ class _MenuRouteState extends State<MenuRoute> {
                 setState(() {
                   _cities.add(cityName);
                 });
-                print('Ville ajoutée: $cityName');
                 Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Ville ajoutée : $cityName'),
+                  ),
+                );
               },
             ),
           ],
@@ -72,7 +77,6 @@ class _MenuRouteState extends State<MenuRoute> {
       },
     );
   }
-
 
   Widget _buildBody() {
     // Obtiens l'heure actuelle
@@ -93,7 +97,7 @@ class _MenuRouteState extends State<MenuRoute> {
     switch (_currentIndex) {
       case 0:
         return FutureBuilder<double>(
-          future: WeatherTemperature.getTemperature('Paris').then((value) => double.parse(value)),
+          future: WeatherTemperature.getTemperature(favoriteCity).then((value) => double.parse(value)), // Remplacez 'Paris' par favoriteCity
           builder: (BuildContext context, AsyncSnapshot<double> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
@@ -118,7 +122,7 @@ class _MenuRouteState extends State<MenuRoute> {
                           style: TextStyle(fontSize: 70, fontWeight: FontWeight.bold, color: Colors.white),
                         ),
                         Text(
-                          'Paris',
+                          favoriteCity,
                           style: TextStyle(fontSize: 40, color: Colors.white),
                         ),
                       ],
@@ -137,18 +141,34 @@ class _MenuRouteState extends State<MenuRoute> {
                 itemCount: _cities.length,
                 itemBuilder: (context, index) {
                   return Card(
+                    shape: Border.all(),
                     child: ListTile(
                       title: Text(
                         _cities[index],
-                        style: TextStyle(fontSize: 20.0), // Augmente la taille du texte
+                        style: TextStyle(fontSize: 20.0),
                       ),
-                      trailing: IconButton(
-                        icon: Icon(Icons.close),
-                        onPressed: () {
-                          setState(() {
-                            _cities.removeAt(index); // Supprime la ville de la liste
-                          });
-                        },
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          IconButton(
+                            icon: Icon(
+                              _cities[index] == favoriteCity ? Icons.star : Icons.star_border, // Si la ville est la ville favorite, affichez une étoile pleine. Sinon, affichez une étoile vide.
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                favoriteCity = _cities[index]; // Met à jour la ville favorite
+                              });
+                            },
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.close),
+                            onPressed: () {
+                              setState(() {
+                                _cities.removeAt(index);
+                              });
+                            },
+                          ),
+                        ],
                       ),
                     ),
                   );
