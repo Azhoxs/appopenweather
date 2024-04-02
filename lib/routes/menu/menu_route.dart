@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../app/common/WeatherTemperature.dart';
 
 class MenuRoute extends StatefulWidget {
   const MenuRoute({Key? key}) : super(key: key);
@@ -38,11 +39,25 @@ class _MenuRouteState extends State<MenuRoute> {
   Widget _buildBody() {
     switch (_currentIndex) {
       case 0:
-        return Container(
-          // Contenu de la page Météo
-          child: Center(
-            child: Text('Contenu de la page Météo'),
-          ),
+        return FutureBuilder<String>(
+          future: WeatherTemperature.getTemperature('Paris'),
+          builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else {
+              if (snapshot.hasError)
+                return Center(child: Text('Erreur: ${snapshot.error}'));
+              else
+                return Center(
+                  child: Text(snapshot.data != null
+                      ? 'Température à Paris: ${double.parse(snapshot.data!).round()}°C'
+                      : 'Chargement...',
+                  ),
+                );
+
+
+            }
+          },
         );
       case 1:
         return Container(
