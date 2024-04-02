@@ -10,6 +10,7 @@ class MenuRoute extends StatefulWidget {
 
 class _MenuRouteState extends State<MenuRoute> {
   int _currentIndex = 0;
+  List<String> _cities = [];
 
   @override
   Widget build(BuildContext context) {
@@ -36,11 +37,48 @@ class _MenuRouteState extends State<MenuRoute> {
     );
   }
 
+  void _addCity() {
+    final TextEditingController _controller = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Ajouter une ville'),
+          content: TextField(
+            controller: _controller,
+            decoration: InputDecoration(hintText: "Entrez le nom d'une ville"),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Annuler'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Ajouter'),
+              onPressed: () {
+                String cityName = _controller.text;
+                setState(() {
+                  _cities.add(cityName);
+                });
+                print('Ville ajoutée: $cityName');
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
   Widget _buildBody() {
-    // Obtenez l'heure actuelle
+    // Obtiens l'heure actuelle
     int hour = DateTime.now().hour;
 
-    // Déterminez le nom de l'image de fond en fonction de l'heure
+    // Détermine le nom de l'image de fond en fonction de l'heure
     String backgroundImage;
     if (hour >= 6 && hour < 11) {
       backgroundImage = 'backgrounds/1.jpg';
@@ -92,16 +130,41 @@ class _MenuRouteState extends State<MenuRoute> {
           },
         );
       case 1:
-        return Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(backgroundImage),
-              fit: BoxFit.cover,
+        return Stack(
+          children: <Widget>[
+            Container(
+              child: ListView.builder(
+                itemCount: _cities.length,
+                itemBuilder: (context, index) {
+                  return Card(
+                    child: ListTile(
+                      title: Text(
+                        _cities[index],
+                        style: TextStyle(fontSize: 20.0), // Augmente la taille du texte
+                      ),
+                      trailing: IconButton(
+                        icon: Icon(Icons.close),
+                        onPressed: () {
+                          setState(() {
+                            _cities.removeAt(index); // Supprime la ville de la liste
+                          });
+                        },
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
-          ),
-          child: Center(
-            child: Text('Contenu de la page Villes'),
-          ),
+            Positioned(
+              bottom: 20.0,
+              right: 20.0,
+              child: FloatingActionButton(
+                onPressed: _addCity,
+                child: Icon(Icons.add),
+                backgroundColor: Colors.white,
+              ),
+            ),
+          ],
         );
       default:
         return Container();
