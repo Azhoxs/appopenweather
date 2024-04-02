@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
 
-import '../home/home_route.dart';
+class MenuRoute extends StatefulWidget {
+  const MenuRoute({Key? key}) : super(key: key);
 
-class MenuRoute extends StatelessWidget {
-  const MenuRoute({super.key});
+  @override
+  _MenuRouteState createState() => _MenuRouteState();
+}
+
+class _MenuRouteState extends State<MenuRoute> {
+  int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.cloud),
@@ -20,19 +26,33 @@ class MenuRoute extends StatelessWidget {
           ),
         ],
         onTap: (index) {
-          switch (index) {
-            case 0:
-              break;
-            case 1:
-              _goToHome(context);
-              break;
-          }
+          setState(() {
+            _currentIndex = index;
+          });
         },
       ),
+      body: _buildBody(),
     );
   }
 
-  void _goToHome(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => const HomeRoute()));
+  Widget _buildBody() {
+    switch (_currentIndex) {
+      case 0:
+        return Container(
+          // Contenu de la page Météo
+          child: Center(
+            child: Text('Contenu de la page Météo'),
+          ),
+        );
+      case 1:
+        return Container(
+          // Contenu de la page Villes
+          child: Center(
+            child: Text('Contenu de la page Villes'),
+          ),
+        );
+      default:
+        return Container();
+    }
   }
 }
